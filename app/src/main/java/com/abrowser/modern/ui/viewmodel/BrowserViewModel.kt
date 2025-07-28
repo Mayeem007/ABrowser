@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.abrowser.modern.domain.model.BrowserTab
-import com.abrowser.modern.domain.model.VideoInfo
+import com.abrowser.modern.data.model.VideoInfo  // Change from domain.model to data.model
 import com.abrowser.modern.domain.repository.BookmarkRepository
 import com.abrowser.modern.domain.repository.DownloadRepository
 import java.util.UUID

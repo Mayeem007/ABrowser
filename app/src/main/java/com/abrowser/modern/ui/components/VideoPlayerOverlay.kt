@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.abrowser.modern.domain.model.VideoInfo
+import com.abrowser.modern.data.model.VideoInfo  // Change from domain.model to data.model
 
 @Composable
 fun VideoPlayerOverlay(
