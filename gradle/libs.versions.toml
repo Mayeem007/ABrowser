@@ -2,8 +2,9 @@
 agp = "8.5.2"
 kotlin = "2.0.20"
 // Update Compose BOM to latest stable
-composeBom = "2024.09.03"
+composeBom = "2024.09.03"  // Keep this as the single Compose BOM version
 coreKtx = "1.16.0"
+// Remove any duplicate composeBom = "2024.09.00"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
