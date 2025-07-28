@@ -1,6 +1,8 @@
 [versions]
-agp = "8.11.1"
-kotlin = "2.0.21"
+agp = "8.5.2"
+kotlin = "2.0.20"
+// Update Compose BOM to latest stable
+composeBom = "2024.09.03"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
