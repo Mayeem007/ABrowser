@@ -7,7 +7,8 @@ data class VideoInfo(
     val duration: Long = 0,
     val quality: String = "720p",
     val format: String = "mp4",
-    val fileSize: Long = 0
+    val fileSize: Long = 0,
+    val downloadUrl: String = url
 )
 
 data class VideoQuality(
@@ -15,3 +16,12 @@ data class VideoQuality(
     val url: String,
     val fileSize: Long
 )
+
+enum class DownloadStatus {
+    PENDING,
+    DOWNLOADING,
+    COMPLETED,
+    FAILED,
+    CANCELLED,
+    PAUSED
+}
