@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.ABrowser" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.ABrowser" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your theme here -->
+    </style>
+
+    <style name="Theme.ABrowser.VideoPlayer" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Video player specific styles -->
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 </resources>
