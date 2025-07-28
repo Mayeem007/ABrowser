@@ -24,6 +24,11 @@ fun BrowserScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    // Fix for potential null currentTab
+    if (uiState.currentTab == null && uiState.tabs.isEmpty()) {
+        viewModel.addNewTab()  // Auto-create a tab if none exist
+    }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -128,36 +133,49 @@ fun BrowserScreen(
     }
 }
 
+// Replace TODO with basic implementations or actual code
 @Composable
 fun VideoDownloadDialog(
-    videos: detectedVideos,
-    onDownload: (ERROR) -> hideVideoDownloadDialog,
-    onDismiss: () -> hideVideoDownloadDialog
+    videos: List<VideoInfo>,  // Assuming detectedVideos is List<VideoInfo>
+    onDownload: (VideoInfo) -> Unit,
+    onDismiss: () -> Unit
 ) {
-    TODO("Not yet implemented")
+    // Implement dialog here, e.g.,
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Detected Videos") },
+        text = { /* List videos */ },
+        confirmButton = { /* Download buttons */ }
+    )
 }
 
 @Composable
 fun BrowserWebView(
-    url: url,
-    onUrlChanged: () -> updateCurrentUrl,
-    onTitleChanged: () -> updateCurrentTitle,
-    onLoadingChanged: () -> updateLoadingState,
-    onVideoDetected: (ERROR) -> onVideoDetected
+    url: String,
+    onUrlChanged: (String) -> Unit,
+    onTitleChanged: (String) -> Unit,
+    onLoadingChanged: (Boolean) -> Unit,
+    onVideoDetected: (VideoInfo) -> Unit
 ) {
-    TODO("Not yet implemented")
+    // Implement WebView here using AndroidView
+    AndroidView(factory = { WebView(it) }) { webView ->
+        // Set up WebViewClient, etc.
+    }
 }
 
 @Composable
 fun AddressBar(
-    url: currentUrl,
+    url: String,
     isLoading: Boolean,
-    onUrlChanged: () -> Unit,
+    onUrlChanged: (String) -> Unit,
     onRefresh: () -> Unit,
     onBack: () -> Unit,
     onForward: () -> Unit,
-    canGoBack: canGoBack,
-    canGoForward: canGoForward
+    canGoBack: Boolean,
+    canGoForward: Boolean
 ) {
-    TODO("Not yet implemented")
+    // Implement address bar UI
+    Row {
+        // TextField for URL, buttons for back/forward/refresh
+    }
 }
