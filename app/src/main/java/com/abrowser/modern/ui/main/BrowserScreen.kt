@@ -77,7 +77,7 @@ fun BrowserScreen(
                 .fillMaxSize()
                 .weight(1f)
         ) {
-            uiState.currentTab?.let { tab ->
+            if (uiState.currentTab != null) {
                 BrowserWebView(
                     url = tab.url,
                     onUrlChanged = { viewModel.updateCurrentUrl(it) },
@@ -86,6 +86,12 @@ fun BrowserScreen(
                     onVideoDetected = { videoInfo ->
                         viewModel.onVideoDetected(videoInfo)
                     }
+                )
+            } else {
+                // Add a placeholder or auto-create tab
+                Text(
+                    text = "No tabs open. Create a new one!",
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
             
