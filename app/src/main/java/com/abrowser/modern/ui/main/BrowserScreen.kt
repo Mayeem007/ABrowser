@@ -15,6 +15,7 @@ import com.abrowser.modern.ui.browser.BrowserViewModel
 import com.abrowser.modern.ui.components.AddressBar
 import com.abrowser.modern.ui.components.TabBar
 import com.abrowser.modern.ui.components.VideoDownloadDialog
+import com.abrowser.modern.ui.viewmodel.BrowserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,13 +23,13 @@ fun BrowserScreen(
     viewModel: BrowserViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         // Top App Bar with tabs
         TopAppBar(
-            title = { 
+            title = {
                 Text(
                     text = uiState.currentTab?.title ?: "ABrowser",
                     maxLines = 1
@@ -48,7 +49,7 @@ fun BrowserScreen(
                 actionIconContentColor = Color.White
             )
         )
-        
+
         // Tab Bar
         if (uiState.tabs.size > 1) {
             TabBar(
@@ -58,7 +59,7 @@ fun BrowserScreen(
                 onTabClosed = { viewModel.closeTab(it) }
             )
         }
-        
+
         // Address Bar
         AddressBar(
             url = uiState.currentUrl,
@@ -70,7 +71,7 @@ fun BrowserScreen(
             canGoBack = uiState.canGoBack,
             canGoForward = uiState.canGoForward
         )
-        
+
         // WebView
         Box(
             modifier = Modifier
@@ -94,7 +95,7 @@ fun BrowserScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
-            
+
             // Video Download FAB
             if (uiState.detectedVideos.isNotEmpty()) {
                 FloatingActionButton(
@@ -113,7 +114,7 @@ fun BrowserScreen(
             }
         }
     }
-    
+
     // Video Download Dialog
     if (uiState.showVideoDownloadDialog) {
         VideoDownloadDialog(
@@ -125,4 +126,38 @@ fun BrowserScreen(
             onDismiss = { viewModel.hideVideoDownloadDialog() }
         )
     }
+}
+
+@Composable
+fun VideoDownloadDialog(
+    videos: detectedVideos,
+    onDownload: (ERROR) -> hideVideoDownloadDialog,
+    onDismiss: () -> hideVideoDownloadDialog
+) {
+    TODO("Not yet implemented")
+}
+
+@Composable
+fun BrowserWebView(
+    url: url,
+    onUrlChanged: () -> updateCurrentUrl,
+    onTitleChanged: () -> updateCurrentTitle,
+    onLoadingChanged: () -> updateLoadingState,
+    onVideoDetected: (ERROR) -> onVideoDetected
+) {
+    TODO("Not yet implemented")
+}
+
+@Composable
+fun AddressBar(
+    url: currentUrl,
+    isLoading: Boolean,
+    onUrlChanged: () -> Unit,
+    onRefresh: () -> Unit,
+    onBack: () -> Unit,
+    onForward: () -> Unit,
+    canGoBack: canGoBack,
+    canGoForward: canGoForward
+) {
+    TODO("Not yet implemented")
 }
