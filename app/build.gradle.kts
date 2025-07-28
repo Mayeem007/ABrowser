@@ -48,13 +48,14 @@ android {
         jvmTarget = "17"
     }
     
+    // Remove this entire block
+    // composeOptions {
+    //     kotlinCompilerExtensionVersion = "1.5.15"
+    // }
+    
     buildFeatures {
         compose = true
         buildConfig = true
-    }
-    
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
     }
     
     packaging {
