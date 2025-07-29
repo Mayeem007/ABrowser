@@ -21,28 +21,34 @@ fun BrowserScreen(
     viewModel: BrowserViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showVideoDialog by remember { mutableStateOf(false) }
+    var detectedVideo by remember { mutableStateOf<VideoInfo?>(null) }
 
-    // Fix for potential null currentTab
-    if (uiState.currentTab == null && uiState.tabs.isEmpty()) {
-        viewModel.addNewTab()  // Auto-create a tab if none exist
-    }
+    // Get the active tab
+    val activeTab = uiState.tabs.find { it.id == uiState.activeTabId }
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Top App Bar with tabs
+        // Top App Bar
         TopAppBar(
             title = {
                 Text(
-                    text = uiState.currentTab?.title ?: "ABrowser",
+                    text = activeTab?.title ?: "ABrowser",
                     maxLines = 1
                 )
             },
             actions = {
-                IconButton(onClick = { viewModel.addNewTab() }) {
+                IconButton(onClick = { viewModel.createNewTab() }) {
                     Icon(Icons.Default.Add, contentDescription = "New Tab")
                 }
-                IconButton(onClick = { viewModel.showMenu() }) {
+                IconButton(onClick = { viewModel.toggleBookmark() }) {
+                    Icon(
+                        if (uiState.isCurrentUrlBookmarked) Icons.Default.Star else Icons.Default.StarBorder,
+                        contentDescription = "Bookmark"
+                    )
+                }
+                IconButton(onClick = { /* TODO: Show menu */ }) {
                     Icon(Icons.Default.MoreVert, contentDescription = "Menu")
                 }
             },
@@ -53,13 +59,40 @@ fun BrowserScreen(
             )
         )
 
-        // Tab Bar (simplified for now)
-        if (uiState.tabs.size > 1) {
-            // TODO: Implement TabBar component
+        // Navigation Bar
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = { viewModel.goBack() },
+                enabled = activeTab?.canGoBack == true
+            ) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            }
+            
+            IconButton(
+                onClick = { viewModel.goForward() },
+                enabled = activeTab?.canGoForward == true
+            ) {
+                Icon(Icons.Default.ArrowForward, contentDescription = "Forward")
+            }
+            
+            IconButton(onClick = { viewModel.refresh() }) {
+                Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+            }
+            
+            OutlinedTextField(
+                value = activeTab?.url ?: "",
+                onValueChange = { /* TODO: Handle URL input */ },
+                modifier = Modifier.weight(1f),
+                placeholder = { Text("Enter URL") },
+                singleLine = true
+            )
         }
-
-        // Address Bar (simplified for now)
-        // TODO: Implement AddressBar component
 
         // WebView
         Box(
@@ -67,17 +100,22 @@ fun BrowserScreen(
                 .fillMaxSize()
                 .weight(1f)
         ) {
-            if (uiState.currentTab != null) {
+            if (activeTab != null) {
                 AndroidView(
                     factory = { context ->
                         WebView(context).apply {
                             settings.javaScriptEnabled = true
                             settings.domStorageEnabled = true
+                            webViewClient = viewModel.createWebViewClient { videoInfo ->
+                                detectedVideo = videoInfo
+                                showVideoDialog = true
+                            }
+                            webChromeClient = viewModel.createWebChromeClient()
                         }
                     },
                     update = { webView ->
-                        if (webView.url != uiState.currentTab.url) {
-                            webView.loadUrl(uiState.currentTab.url)
+                        if (webView.url != activeTab.url && activeTab.url.isNotEmpty()) {
+                            webView.loadUrl(activeTab.url)
                         }
                     },
                     modifier = Modifier.fillMaxSize()
@@ -89,10 +127,19 @@ fun BrowserScreen(
                 )
             }
 
+            // Loading indicator
+            if (uiState.isLoading) {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                )
+            }
+
             // Video Download FAB
-            if (uiState.detectedVideos.isNotEmpty()) {
+            if (detectedVideo != null) {
                 FloatingActionButton(
-                    onClick = { viewModel.showVideoDownloadDialog() },
+                    onClick = { showVideoDialog = true },
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(16.dp),
@@ -109,36 +156,36 @@ fun BrowserScreen(
     }
 
     // Video Download Dialog
-    if (uiState.showVideoDownloadDialog) {
+    if (showVideoDialog && detectedVideo != null) {
         VideoDownloadDialog(
-            videos = uiState.detectedVideos,
+            video = detectedVideo!!,
             onDownload = { videoInfo ->
                 viewModel.downloadVideo(videoInfo)
-                viewModel.hideVideoDownloadDialog()
+                showVideoDialog = false
             },
-            onDismiss = { viewModel.hideVideoDownloadDialog() }
+            onDismiss = { showVideoDialog = false }
         )
     }
 }
 
 @Composable
 fun VideoDownloadDialog(
-    videos: List<VideoInfo>,
+    video: VideoInfo,
     onDownload: (VideoInfo) -> Unit,
     onDismiss: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Detected Videos") },
+        title = { Text("Download Video") },
         text = { 
-            Text("${videos.size} video(s) detected")
+            Column {
+                Text("Title: ${video.title}")
+                Text("Quality: ${video.quality}")
+                Text("Format: ${video.format}")
+            }
         },
         confirmButton = {
-            TextButton(onClick = { 
-                if (videos.isNotEmpty()) {
-                    onDownload(videos.first())
-                }
-            }) {
+            TextButton(onClick = { onDownload(video) }) {
                 Text("Download")
             }
         },

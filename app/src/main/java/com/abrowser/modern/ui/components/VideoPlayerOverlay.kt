@@ -114,7 +114,7 @@ fun VideoPlayerOverlay(
                         // Quality selector
                         OutlinedButton(onClick = onQualityClick) {
                             Icon(
-                                Icons.Default.HighQuality,
+                                Icons.Default.Settings,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp)
                             )
@@ -125,7 +125,7 @@ fun VideoPlayerOverlay(
                         // Fullscreen button
                         OutlinedButton(onClick = onFullscreenClick) {
                             Icon(
-                                Icons.Default.Fullscreen,
+                                Icons.Default.OpenInFull,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp)
                             )

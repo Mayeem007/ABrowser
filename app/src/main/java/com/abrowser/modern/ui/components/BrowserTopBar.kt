@@ -144,7 +144,7 @@ fun BrowserTopBar(
 
             IconButton(onClick = onBookmarkToggle) {
                 Icon(
-                    if (isBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                    if (isBookmarked) Icons.Default.Star else Icons.Default.StarBorder,
                     contentDescription = "Bookmark",
                     tint = if (isBookmarked) MaterialTheme.colorScheme.primary else Color.Gray
                 )
