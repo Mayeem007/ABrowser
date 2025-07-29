@@ -77,7 +77,7 @@ fun VideoPlayerOverlay(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "Size: ${videoInfo.size}",
+                            text = "Size: ${videoInfo.fileSize}",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

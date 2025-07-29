@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.abrowser.modern.domain.model.BrowserTab
-import com.abrowser.modern.domain.model.VideoInfo
+import com.abrowser.modern.data.model.VideoInfo
 import com.abrowser.modern.ui.components.BrowserTopBar
 import com.abrowser.modern.ui.components.TabBar
 import com.abrowser.modern.ui.components.VideoPlayerOverlay

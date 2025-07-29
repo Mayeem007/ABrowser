@@ -9,7 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import android.webkit.WebView
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.abrowser.modern.data.model.VideoInfo
 import com.abrowser.modern.ui.browser.BrowserWebView
 import com.abrowser.modern.ui.browser.BrowserViewModel
 import com.abrowser.modern.ui.components.AddressBar
@@ -85,7 +88,7 @@ fun BrowserScreen(
         ) {
             if (uiState.currentTab != null) {
                 BrowserWebView(
-                    url = tab.url,
+                    url = uiState.currentTab.url,
                     onUrlChanged = { viewModel.updateCurrentUrl(it) },
                     onTitleChanged = { viewModel.updateCurrentTitle(it) },
                     onLoadingChanged = { viewModel.updateLoadingState(it) },
