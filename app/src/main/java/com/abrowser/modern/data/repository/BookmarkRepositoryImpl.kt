@@ -45,16 +45,16 @@ class BookmarkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun isBookmarked(url: String): Boolean {
-        return bookmarkDao.getBookmarkByUrl(url) != null
+        return bookmarkDao.isBookmarked(url)
     }
 
     private fun BookmarkEntity.toDomainModel(): Bookmark {
         return Bookmark(
-            id = this.id.toString(),
+            id = this.id,
             title = this.title,
             url = this.url,
             favicon = this.favicon,
-            folderId = this.folderId?.toString(),
+            folderId = this.folderId,
             createdAt = this.createdAt,
             updatedAt = this.updatedAt
         )
@@ -62,11 +62,11 @@ class BookmarkRepositoryImpl @Inject constructor(
 
     private fun Bookmark.toEntity(): BookmarkEntity {
         return BookmarkEntity(
-            id = this.id.toLongOrNull() ?: 0L,
+            id = this.id,
             title = this.title,
             url = this.url,
             favicon = this.favicon,
-            folderId = this.folderId?.toLongOrNull(),
+            folderId = this.folderId,
             createdAt = this.createdAt,
             updatedAt = this.updatedAt
         )
