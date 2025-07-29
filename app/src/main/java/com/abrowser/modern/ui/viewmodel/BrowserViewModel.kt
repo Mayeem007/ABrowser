@@ -21,8 +21,8 @@ data class BrowserUiState(
     val tabs: List<BrowserTab> = listOf(
         BrowserTab(
             id = UUID.randomUUID().toString(),
-            title = "New Tab",
-            url = "",
+            title = "Google",
+            url = "https://www.google.com",
             isActive = true
         )
     ),
