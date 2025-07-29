@@ -2,6 +2,7 @@ package com.abrowser.modern.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.abrowser.modern.data.database.entities.DownloadStatus
 
 @Entity(tableName = "downloads")
 data class DownloadItem(
