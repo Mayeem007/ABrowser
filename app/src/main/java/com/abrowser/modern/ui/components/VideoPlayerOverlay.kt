@@ -103,7 +103,7 @@ fun VideoPlayerOverlay(
                             )
                         ) {
                             Icon(
-                                Icons.Default.ArrowDownward,
+                                Icons.Default.Add,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp)
                             )
@@ -125,7 +125,7 @@ fun VideoPlayerOverlay(
                         // Fullscreen button
                         OutlinedButton(onClick = onFullscreenClick) {
                             Icon(
-                                Icons.Default.CropFree,
+                                Icons.Default.Home,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp)
                             )
