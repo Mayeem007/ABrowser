@@ -42,15 +42,16 @@ class DownloadRepositoryImpl @Inject constructor(
 
     override suspend fun startDownload(url: String, fileName: String, mimeType: String): Long {
         val download = DownloadEntity(
-            url = url,
             fileName = fileName,
+            url = url,
+            filePath = "/storage/emulated/0/Download/$fileName",
+            fileSize = 0L,
+            downloadedSize = 0L,
             mimeType = mimeType,
             status = DownloadStatus.PENDING,
             progress = 0f,
-            totalSize = 0L,
-            downloadedSize = 0L,
             createdAt = Date(),
-            updatedAt = Date()
+            completedAt = null
         )
         return insertDownload(download)
     }
@@ -58,21 +59,21 @@ class DownloadRepositoryImpl @Inject constructor(
     override suspend fun pauseDownload(id: Long) {
         val download = getDownloadById(id)
         download?.let {
-            updateDownload(it.copy(status = DownloadStatus.PAUSED, updatedAt = Date()))
+            updateDownload(it.copy(status = DownloadStatus.PAUSED))
         }
     }
 
     override suspend fun resumeDownload(id: Long) {
         val download = getDownloadById(id)
         download?.let {
-            updateDownload(it.copy(status = DownloadStatus.DOWNLOADING, updatedAt = Date()))
+            updateDownload(it.copy(status = DownloadStatus.DOWNLOADING))
         }
     }
 
     override suspend fun cancelDownload(id: Long) {
         val download = getDownloadById(id)
         download?.let {
-            updateDownload(it.copy(status = DownloadStatus.CANCELLED, updatedAt = Date()))
+            updateDownload(it.copy(status = DownloadStatus.CANCELLED))
         }
     }
 }
