@@ -13,11 +13,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import android.webkit.WebView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.abrowser.modern.data.model.VideoInfo
-import com.abrowser.modern.ui.browser.BrowserWebView
-import com.abrowser.modern.ui.browser.BrowserViewModel
-import com.abrowser.modern.ui.components.AddressBar
-import com.abrowser.modern.ui.components.TabBar
-import com.abrowser.modern.ui.components.VideoDownloadDialog
 import com.abrowser.modern.ui.viewmodel.BrowserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,27 +53,13 @@ fun BrowserScreen(
             )
         )
 
-        // Tab Bar
+        // Tab Bar (simplified for now)
         if (uiState.tabs.size > 1) {
-            TabBar(
-                tabs = uiState.tabs,
-                activeTabId = uiState.currentTab?.id,
-                onTabSelected = { viewModel.switchToTab(it) },
-                onTabClosed = { viewModel.closeTab(it) }
-            )
+            // TODO: Implement TabBar component
         }
 
-        // Address Bar
-        AddressBar(
-            url = uiState.currentUrl,
-            isLoading = uiState.isLoading,
-            onUrlChanged = { viewModel.navigateToUrl(it) },
-            onRefresh = { viewModel.refresh() },
-            onBack = { viewModel.goBack() },
-            onForward = { viewModel.goForward() },
-            canGoBack = uiState.canGoBack,
-            canGoForward = uiState.canGoForward
-        )
+        // Address Bar (simplified for now)
+        // TODO: Implement AddressBar component
 
         // WebView
         Box(
@@ -87,17 +68,21 @@ fun BrowserScreen(
                 .weight(1f)
         ) {
             if (uiState.currentTab != null) {
-                BrowserWebView(
-                    url = uiState.currentTab.url,
-                    onUrlChanged = { viewModel.updateCurrentUrl(it) },
-                    onTitleChanged = { viewModel.updateCurrentTitle(it) },
-                    onLoadingChanged = { viewModel.updateLoadingState(it) },
-                    onVideoDetected = { videoInfo ->
-                        viewModel.onVideoDetected(videoInfo)
-                    }
+                AndroidView(
+                    factory = { context ->
+                        WebView(context).apply {
+                            settings.javaScriptEnabled = true
+                            settings.domStorageEnabled = true
+                        }
+                    },
+                    update = { webView ->
+                        if (webView.url != uiState.currentTab.url) {
+                            webView.loadUrl(uiState.currentTab.url)
+                        }
+                    },
+                    modifier = Modifier.fillMaxSize()
                 )
             } else {
-                // Add a placeholder or auto-create tab
                 Text(
                     text = "No tabs open. Create a new one!",
                     modifier = Modifier.align(Alignment.Center)
@@ -136,49 +121,31 @@ fun BrowserScreen(
     }
 }
 
-// Replace TODO with basic implementations or actual code
 @Composable
 fun VideoDownloadDialog(
-    videos: List<VideoInfo>,  // Assuming detectedVideos is List<VideoInfo>
+    videos: List<VideoInfo>,
     onDownload: (VideoInfo) -> Unit,
     onDismiss: () -> Unit
 ) {
-    // Implement dialog here, e.g.,
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Detected Videos") },
-        text = { /* List videos */ },
-        confirmButton = { /* Download buttons */ }
+        text = { 
+            Text("${videos.size} video(s) detected")
+        },
+        confirmButton = {
+            TextButton(onClick = { 
+                if (videos.isNotEmpty()) {
+                    onDownload(videos.first())
+                }
+            }) {
+                Text("Download")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
     )
-}
-
-@Composable
-fun BrowserWebView(
-    url: String,
-    onUrlChanged: (String) -> Unit,
-    onTitleChanged: (String) -> Unit,
-    onLoadingChanged: (Boolean) -> Unit,
-    onVideoDetected: (VideoInfo) -> Unit
-) {
-    // Implement WebView here using AndroidView
-    AndroidView(factory = { WebView(it) }) { webView ->
-        // Set up WebViewClient, etc.
-    }
-}
-
-@Composable
-fun AddressBar(
-    url: String,
-    isLoading: Boolean,
-    onUrlChanged: (String) -> Unit,
-    onRefresh: () -> Unit,
-    onBack: () -> Unit,
-    onForward: () -> Unit,
-    canGoBack: Boolean,
-    canGoForward: Boolean
-) {
-    // Implement address bar UI
-    Row {
-        // TextField for URL, buttons for back/forward/refresh
-    }
 }
