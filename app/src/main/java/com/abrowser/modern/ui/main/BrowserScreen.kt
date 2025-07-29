@@ -147,7 +147,7 @@ fun BrowserScreen(
                     containerColor = MaterialTheme.colorScheme.secondary
                 ) {
                     Icon(
-                        Icons.Default.GetApp,
+                        Icons.Default.ArrowDownward,
                         contentDescription = "Download Video",
                         tint = Color.White
                     )
