@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.abrowser.modern.data.model.VideoInfo  // Change from domain.model to data.model
+import com.abrowser.modern.data.model.VideoInfo
 
 @Composable
 fun VideoPlayerOverlay(
@@ -103,7 +103,7 @@ fun VideoPlayerOverlay(
                             )
                         ) {
                             Icon(
-                                Icons.Default.Download,
+                                Icons.Default.FileDownload,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp)
                             )
@@ -125,7 +125,7 @@ fun VideoPlayerOverlay(
                         // Fullscreen button
                         OutlinedButton(onClick = onFullscreenClick) {
                             Icon(
-                                Icons.Default.OpenInFull,
+                                Icons.Default.Fullscreen,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp)
                             )

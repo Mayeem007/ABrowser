@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -144,7 +145,7 @@ fun BrowserTopBar(
 
             IconButton(onClick = onBookmarkToggle) {
                 Icon(
-                    if (isBookmarked) Icons.Default.Star else Icons.Default.StarBorder,
+                    if (isBookmarked) Icons.Filled.Star else Icons.Outlined.Star,
                     contentDescription = "Bookmark",
                     tint = if (isBookmarked) MaterialTheme.colorScheme.primary else Color.Gray
                 )

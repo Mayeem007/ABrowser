@@ -3,6 +3,7 @@ package com.abrowser.modern.ui.main
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -44,7 +45,7 @@ fun BrowserScreen(
                 }
                 IconButton(onClick = { viewModel.toggleBookmark() }) {
                     Icon(
-                        if (uiState.isCurrentUrlBookmarked) Icons.Default.Star else Icons.Default.StarBorder,
+                        if (uiState.isCurrentUrlBookmarked) Icons.Filled.Star else Icons.Outlined.Star,
                         contentDescription = "Bookmark"
                     )
                 }
@@ -146,7 +147,7 @@ fun BrowserScreen(
                     containerColor = MaterialTheme.colorScheme.secondary
                 ) {
                     Icon(
-                        Icons.Default.Download,
+                        Icons.Default.FileDownload,
                         contentDescription = "Download Video",
                         tint = Color.White
                     )
