@@ -99,7 +99,7 @@ fun BrowserScreen(
                 value = urlText,
                 onValueChange = { urlText = it },
                 modifier = Modifier.weight(1f),
-                placeholder = { Text("Enter URL") },
+                placeholder = { Text("Enter URL or search") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Go
@@ -122,12 +122,18 @@ fun BrowserScreen(
                 AndroidView(
                     factory = { context ->
                         WebView(context).apply {
-                            settings.javaScriptEnabled = true
-                            settings.domStorageEnabled = true
-                            settings.loadWithOverviewMode = true
-                            settings.useWideViewPort = true
-                            settings.builtInZoomControls = true
-                            settings.displayZoomControls = false
+                            settings.apply {
+                                javaScriptEnabled = true
+                                domStorageEnabled = true
+                                loadWithOverviewMode = true
+                                useWideViewPort = true
+                                builtInZoomControls = true
+                                displayZoomControls = false
+                                setSupportZoom(true)
+                                allowFileAccess = true
+                                allowContentAccess = true
+                                mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                            }
                             
                             webViewClient = viewModel.createWebViewClient { videoInfo ->
                                 detectedVideo = videoInfo
@@ -140,7 +146,8 @@ fun BrowserScreen(
                         }
                     },
                     update = { webView ->
-                        if (webView.url != activeTab.url && activeTab.url.isNotEmpty()) {
+                        // Load URL when it changes
+                        if (activeTab.url.isNotEmpty() && webView.url != activeTab.url) {
                             webView.loadUrl(activeTab.url)
                         }
                     },
@@ -154,11 +161,12 @@ fun BrowserScreen(
             }
 
             // Loading indicator
-            if (uiState.isLoading) {
+            if (activeTab?.isLoading == true) {
                 LinearProgressIndicator(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .align(Alignment.TopCenter)
+                        .align(Alignment.TopCenter),
+                    progress = (activeTab.progress / 100f).coerceIn(0f, 1f)
                 )
             }
 
@@ -172,7 +180,7 @@ fun BrowserScreen(
                     containerColor = MaterialTheme.colorScheme.secondary
                 ) {
                     Icon(
-                        Icons.Default.Add,
+                        Icons.Default.Download,
                         contentDescription = "Download Video",
                         tint = Color.White
                     )
@@ -188,8 +196,12 @@ fun BrowserScreen(
             onDownload = { videoInfo ->
                 viewModel.downloadVideo(videoInfo)
                 showVideoDialog = false
+                detectedVideo = null
             },
-            onDismiss = { showVideoDialog = false }
+            onDismiss = { 
+                showVideoDialog = false
+                detectedVideo = null
+            }
         )
     }
 }
@@ -208,6 +220,8 @@ fun VideoDownloadDialog(
                 Text("Title: ${video.title}")
                 Text("Quality: ${video.quality}")
                 Text("Format: ${video.format}")
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Do you want to download this video?")
             }
         },
         confirmButton = {

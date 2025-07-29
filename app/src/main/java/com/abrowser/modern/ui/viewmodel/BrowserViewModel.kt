@@ -168,7 +168,7 @@ class BrowserViewModel @Inject constructor(
             override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 updateActiveTab { tab ->
-                    tab.copy(isLoading = true, url = url ?: "")
+                    tab.copy(isLoading = true, url = url ?: "", progress = 0)
                 }
             }
 
@@ -180,7 +180,8 @@ class BrowserViewModel @Inject constructor(
                         title = view?.title ?: "New Tab",
                         url = url ?: "",
                         canGoBack = view?.canGoBack() ?: false,
-                        canGoForward = view?.canGoForward() ?: false
+                        canGoForward = view?.canGoForward() ?: false,
+                        progress = 100
                     )
                 }
                 
@@ -201,7 +202,6 @@ class BrowserViewModel @Inject constructor(
                     })();
                 """) { result ->
                     if (result != "null" && result != null) {
-                        // Parse video info and show overlay
                         try {
                             val videoInfo = VideoInfo(
                                 title = view?.title ?: "Video",
