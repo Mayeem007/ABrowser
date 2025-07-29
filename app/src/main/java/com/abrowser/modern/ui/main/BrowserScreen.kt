@@ -1,6 +1,8 @@
 package com.abrowser.modern.ui.main
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
@@ -9,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import android.webkit.WebView
@@ -24,9 +27,15 @@ fun BrowserScreen(
     val uiState by viewModel.uiState.collectAsState()
     var showVideoDialog by remember { mutableStateOf(false) }
     var detectedVideo by remember { mutableStateOf<VideoInfo?>(null) }
+    var urlText by remember { mutableStateOf("") }
 
     // Get the active tab
     val activeTab = uiState.tabs.find { it.id == uiState.activeTabId }
+
+    // Update URL text when active tab changes
+    LaunchedEffect(activeTab?.url) {
+        urlText = activeTab?.url ?: ""
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -87,11 +96,19 @@ fun BrowserScreen(
             }
             
             OutlinedTextField(
-                value = activeTab?.url ?: "",
-                onValueChange = { /* TODO: Handle URL input */ },
+                value = urlText,
+                onValueChange = { urlText = it },
                 modifier = Modifier.weight(1f),
                 placeholder = { Text("Enter URL") },
-                singleLine = true
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Go
+                ),
+                keyboardActions = KeyboardActions(
+                    onGo = {
+                        viewModel.navigateToUrl(urlText)
+                    }
+                )
             )
         }
 
@@ -107,11 +124,19 @@ fun BrowserScreen(
                         WebView(context).apply {
                             settings.javaScriptEnabled = true
                             settings.domStorageEnabled = true
+                            settings.loadWithOverviewMode = true
+                            settings.useWideViewPort = true
+                            settings.builtInZoomControls = true
+                            settings.displayZoomControls = false
+                            
                             webViewClient = viewModel.createWebViewClient { videoInfo ->
                                 detectedVideo = videoInfo
                                 showVideoDialog = true
                             }
                             webChromeClient = viewModel.createWebChromeClient()
+                            
+                            // Set this WebView in the ViewModel
+                            viewModel.setWebView(this)
                         }
                     },
                     update = { webView ->

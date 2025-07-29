@@ -5,15 +5,15 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.abrowser.modern.data.model.VideoInfo
+import com.abrowser.modern.domain.model.BrowserTab
+import com.abrowser.modern.domain.repository.BookmarkRepository
+import com.abrowser.modern.domain.repository.DownloadRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import com.abrowser.modern.domain.model.BrowserTab
-import com.abrowser.modern.data.model.VideoInfo  // Change from domain.model to data.model
-import com.abrowser.modern.domain.repository.BookmarkRepository
-import com.abrowser.modern.domain.repository.DownloadRepository
 import java.util.UUID
 import javax.inject.Inject
 
@@ -28,7 +28,8 @@ data class BrowserUiState(
     ),
     val activeTabId: String = "",
     val isCurrentUrlBookmarked: Boolean = false,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val currentWebView: WebView? = null
 )
 
 @HiltViewModel
@@ -44,6 +45,10 @@ class BrowserViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             activeTabId = _uiState.value.tabs.first().id
         )
+    }
+
+    fun setWebView(webView: WebView) {
+        _uiState.value = _uiState.value.copy(currentWebView = webView)
     }
 
     fun createNewTab() {
@@ -104,14 +109,23 @@ class BrowserViewModel @Inject constructor(
     }
 
     fun goBack() {
-        // This would be handled by WebView
+        _uiState.value.currentWebView?.let { webView ->
+            if (webView.canGoBack()) {
+                webView.goBack()
+            }
+        }
     }
 
     fun goForward() {
-        // This would be handled by WebView
+        _uiState.value.currentWebView?.let { webView ->
+            if (webView.canGoForward()) {
+                webView.goForward()
+            }
+        }
     }
 
     fun refresh() {
+        _uiState.value.currentWebView?.reload()
         updateActiveTab { tab ->
             tab.copy(isLoading = true)
         }
